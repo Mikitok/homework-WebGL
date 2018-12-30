@@ -35,7 +35,7 @@ function main() {
   const shaderProgram=initShaderProgram(gl,vsSource,fsSource);
   const programInfo={
     program: shaderProgram,
-    attribLovations:{
+    attribLocations:{
       vertexPositon:gl.getAttribLocation(shaderProgram,'aVertexPosition'),
     },
     uniformLocations:{
@@ -49,7 +49,7 @@ function main() {
 
 }
 
-function intBuffers() {
+function intBuffers(gl) {
   //得到了缓冲对象并存储在顶点缓冲器
   squareVerticsBuffer=gl.createBuffer();
   //绑定上下文
@@ -65,9 +65,10 @@ function intBuffers() {
 
   //转化为 WebGL 浮点型类型的数组，并将其传到 gl 对象的  bufferData() 方法来建立对象的顶点
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertics),gl.STATIC_DRAW);
+  return {vertics: squareVerticsBuffer};
 }
 
-function drawScene() {
+function drawScene(gl,programInfo,buffers) {
   gl.clearColor(0.0,0.0,0.0,1.0);
   gl.clearDepth(1.0);
   gl.enable(gl.DEPTH_TEST);
@@ -76,24 +77,21 @@ function drawScene() {
   // 用背景色擦除上下文
   gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
 
-
-
   //建立摄像机透视矩阵,设置45度的视图角度，并且宽高比设为 640/480（画尺寸）。 指定在摄像机距离0.1到100单位长度的范围内，物体可见。
   const fieldOfView=45 * Math.PI / 180;
-  const aspect=gl.canvas.clientWidth.gl.canvas.clientHeight;
+  const aspect=gl.canvas.clientWidth/gl.canvas.clientHeight;
   const zNear=0.1;
   const zFar=100.0;
   const projectionMatrix=mat4.create();
-  perspectiveMatrix=makePerspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
+  mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
 
   //加载特定位置
   const modelViewMatrix = mat4.create();
 
-  //把正方形放在距离摄像机6个单位的的位置
-  mat4.translate(modelViewMatrix,     // destination matrix
-      modelViewMatrix,     // matrix to translate
-      [-0.0, 0.0, -6.0]);
+  mat4.translate(modelViewMatrix,modelViewMatrix,[-0.0, 0.0, -6.0]);
 
+  // Tell WebGL how to pull out the positions from the position
+  // buffer into the vertexPosition attribute.
   {
     const numComponents = 2;
     const type = gl.FLOAT;
@@ -101,13 +99,22 @@ function drawScene() {
     const stride = 0;
     const offset = 0;
     gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position);
-    gl.vertexAttribPointer(programInfo.attribLocations.vertexPosition, numComponents, type, normalize, stride, offset);
-    gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
+    gl.vertexAttribPointer(
+        programInfo.attribLocations.vertexPosition,
+        numComponents,
+        type,
+        normalize,
+        stride,
+        offset);
+    gl.enableVertexAttribArray(
+        programInfo.attribLocations.vertexPosition);
   }
 
   // Tell WebGL to use our program when drawing
+
   gl.useProgram(programInfo.program);
 
+  // Set the shader uniforms
 
   gl.uniformMatrix4fv(
       programInfo.uniformLocations.projectionMatrix,
@@ -127,8 +134,8 @@ function drawScene() {
 
 //初始化着色器程序，让WebGL知道如何绘制我们的数据
 function initShaderProgram(gl, vsSource, fsSource ) {
-  const vertexShader= loadShader(gl,gl.VERTEX_SHADER);
-  const fragmentShader=loadShader(gl,gl.FRAGMENT_SHADER);
+  const vertexShader= loadShader(gl,gl.VERTEX_SHADER,vsSource);
+  const fragmentShader=loadShader(gl,gl.FRAGMENT_SHADER,fsSource);
 
   // 创建着色器程序
   const shaderProgram=gl.createProgram();
