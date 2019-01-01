@@ -56,8 +56,8 @@ function initCamera() {
     // 相机（透视相机）
     camera=new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.01,2000);
     camera.position.x = 0;
-    camera.position.y = 0;
-    camera.position.z = 45;
+    camera.position.y = 50;
+    camera.position.z = 30;
     //camera.lookAt(new THREE.Vector3(0,0,0));
 }
 
@@ -77,15 +77,15 @@ function initLight() {
 }
 
 function initObject() {
-    var material = new THREE.MeshLambertMaterial({ color: 0x8B4513 });
-    var geometry = new THREE.PlaneGeometry(1000, 1000);
-    plane = new THREE.Mesh(geometry, material);
-    plane.rotation.x = (-90 * Math.PI) / 180;
-    //plane.castShadow=true;
-    plane.receiveShadow=true;
-    scene.add(plane);
+    // var material = new THREE.MeshLambertMaterial({ color: 0x8B4513 });
+    // var geometry = new THREE.PlaneGeometry(1000, 1000);
+    // plane = new THREE.Mesh(geometry, material);
+    // plane.rotation.x = (-90 * Math.PI) / 180;
+    // //plane.castShadow=true;
+    // plane.receiveShadow=true;
+    // scene.add(plane);
 
-    city=new THREEx.ModernCity();
+    city=new ModernCity();
     city.castShadow=true;
     city.receiveShadow=true;
     scene.add(city);

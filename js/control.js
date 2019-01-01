@@ -4,7 +4,7 @@ function Control(object, domElement) {
 
   this.domElement = domElement !== undefined ? domElement : document;
 
-  this.movementSpeed = 10.0;//移动速度
+  this.movementSpeed = 10.0;
   this.lookSpeed = 0.005;
 
   this.lookVertical = true;
@@ -50,7 +50,8 @@ function Control(object, domElement) {
     if (this.domElement === document) {
       this.viewHalfX = window.innerWidth / 2;
       this.viewHalfY = window.innerHeight / 2;
-    } else {
+    }
+    else {
       this.viewHalfX = this.domElement.offsetWidth / 2;
       this.viewHalfY = this.domElement.offsetHeight / 2;
     }
