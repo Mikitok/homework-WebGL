@@ -67,13 +67,19 @@ function initLight() {
     //light.position.set(0.75, 1, 0.25);
     light=new THREE.AmbientLight( 0x404040 );
     // light.castShadow=true;
+
     scene.add(light);
 
     var spotLight=new THREE.SpotLight(0xffffcc);
-    spotLight.position.set(0, 200, 100);
+    spotLight.position.set(0, 100, 200);
     spotLight.castShadow=true;
     scene.add(spotLight);
 
+    var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+    var material = new THREE.MeshBasicMaterial( {color: 0xCC0000} );
+    var sphere = new THREE.Mesh( geometry, material );
+    sphere.position.set(0, 100, 200);
+    scene.add(sphere);
 }
 
 function initObject() {
