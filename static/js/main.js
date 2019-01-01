@@ -28,23 +28,24 @@ function main() {
 
 function initScene(){
     scene=new THREE.Scene();
-    scene.fog = null;
+    scene.fog= new THREE.FogExp2( 0xd0e0f0, 0.004 );
 
-    var path = '../img/';
-    var urls = [
-        path + 'right.jpg', path + 'left.jpg',
-        path + 'top.jpg', path + 'bottom.jpg',
-        path +'back.jpg' , path + 'front.jpg'
-    ];
-    var textureCube = new THREE.CubeTextureLoader().load( urls );
-    scene.background = textureCube;
+    // var path = '../img/';
+    // var urls = [
+    //     path + 'right.jpg', path + 'left.jpg',
+    //     path + 'top.jpg', path + 'bottom.jpg',
+    //     path + 'back.jpg' , path + 'front.jpg'
+    // ];
+    // var textureCube = new THREE.CubeTextureLoader().load( urls );
+    // scene.background = textureCube;
 }
 
 function initRenderer() {
     // 渲染器
-    renderer = new THREE.WebGLRenderer({ antialias: false });
+    renderer = new THREE.WebGLRenderer({ antialiasing: true });
     renderer.shadowMap.enabled=true;
     renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+    renderer.setClearColor(0xE1FFFF,1.0);
     // 设置渲染器的大小为窗口的内宽度，也就是内容区的宽度
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);  //渲染器renderer的domElement元素，表示渲染器中的画布
@@ -55,8 +56,8 @@ function initCamera() {
     // 相机（透视相机）
     camera=new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.01,2000);
     camera.position.x = 0;
-    camera.position.y = 80;
-    camera.position.z = 0;
+    camera.position.y = 0;
+    camera.position.z = 45;
     //camera.lookAt(new THREE.Vector3(0,0,0));
 }
 
@@ -76,22 +77,22 @@ function initLight() {
 }
 
 function initObject() {
-    // var material = new THREE.MeshLambertMaterial({ color: 0x8B4513 });
-    // var geometry = new THREE.PlaneGeometry(2000, 2000);
-    // plane = new THREE.Mesh(geometry, material);
-    // plane.rotation.x = (-90 * Math.PI) / 180;
-    // //plane.castShadow=true;
-    // plane.receiveShadow=true;
-    // scene.add(plane);
+    var material = new THREE.MeshLambertMaterial({ color: 0x8B4513 });
+    var geometry = new THREE.PlaneGeometry(1000, 1000);
+    plane = new THREE.Mesh(geometry, material);
+    plane.rotation.x = (-90 * Math.PI) / 180;
+    //plane.castShadow=true;
+    plane.receiveShadow=true;
+    scene.add(plane);
 
-    city=new City();
+    city=new THREEx.ModernCity();
     city.castShadow=true;
     city.receiveShadow=true;
     scene.add(city);
 }
 
 function initControl() {
-    controls = new Control(camera);
+    controls = new THREE.FirstPersonControls(camera);
     controls.movementSpeed = 10;
     controls.lookSpeed = 0.05;
     controls.lookVertical = true;
