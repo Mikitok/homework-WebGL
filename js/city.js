@@ -1,6 +1,4 @@
-var THREEx=THREEx||{};
-
-THREEx.ModernCity = function() {
+function ModernCity () {
   var cube=new THREE.CubeGeometry(1,1,1);
   cube.applyMatrix(new THREE.Matrix4().makeTranslation(0,0.5,0));   //将参考点设置在立方体的底部
   cube.faces.splice(6, 2);   //去掉立方体的底面
@@ -47,9 +45,9 @@ THREEx.ModernCity = function() {
   var groundMesh=createSquareGround();
   object.add(groundMesh);
 
-  var sidewayMesh=createSquareSideWay();
-  object.add(sidewayMesh);
-
+  // var sidewayMesh=createSquareSideWay();
+  // object.add(sidewayMesh);
+  //
   var buildingsMesh=createSquareBuildings();
   object.add(buildingsMesh);
 
@@ -57,43 +55,45 @@ THREEx.ModernCity = function() {
 
   function createSquareGround() {
     //建立地面
-    var geometry=new THREE.PlaneGeometry(1,1,1);
+    var geometry=new THREE.PlaneGeometry(2,2,2);
     var material=new THREE.MeshLambertMaterial({color:0x222222});
     var ground=new THREE.Mesh(geometry,material);
-    ground.lookAt(new THREE.Vector3(0,1,0));
+    ground.rotation.x = (-90 * Math.PI) / 180;
     ground.scale.x=blockNumX*blockSizeX;
-    ground.scale.z=blockNumZ*blockSizeZ;
+    ground.scale.y=blockNumZ*blockSizeZ;
+    ground.rotation.x = (-90 * Math.PI) / 180;
+    ground.receiveShadow=true;
     return ground;
   }
 
-  function createSquareSideWay() {
-    var sidewayGeometry=new THREE.Geometry();
-    for(var i=0;i<blockNumZ;i++){
-      for(var j=0;j<blockNumX;j++){
-        for(var k=0;k<blockDensity;k++){
-          //随机选取楼房初始坐标
-          buildingMesh.position.x=(i+0.5-blockNumX/2)*blockSizeX;
-          buildingMesh.position.z=(j+0.5-blockNumZ/2)*blockSizeZ;
-          buildingMesh.position.x=buildingMesh.position.x+(j+0.5-blockNumX/2)*blockSizeX;
-          buildingMesh.position.z=buildingMesh.position.z+(i+0.5-blockNumZ/2)*blockSizeZ;
-
-          //随机初始化楼房大小
-          buildingMesh.scale.x=blockSizeX-roadW;
-          buildingMesh.scale.y=sidewayH;
-          buildingMesh.scale.z=blockSizeZ-roadD;
-
-          //将楼房加入城市
-          buildingMesh.updateMatrix();
-          sidewayGeometry.merge(buildingMesh.geometry, buildingMesh.matrix);
-        }
-      }
-    }
-    var material=new THREE.MeshLambertMaterial();
-    material.color=0x444444;
-    var sidewayMesh=new THREE.Mesh(sidewayGeometry,material);
-    return sidewayMesh;
-
-  }
+  // function createSquareSideWay() {
+  //   var sidewayGeometry=new THREE.Geometry();
+  //   for(var i=0;i<blockNumZ;i++){
+  //     for(var j=0;j<blockNumX;j++){
+  //       for(var k=0;k<blockDensity;k++){
+  //         //随机选取初始坐标
+  //         buildingMesh.position.x=(i+0.5-blockNumX/2)*blockSizeX;
+  //         buildingMesh.position.z=(j+0.5-blockNumZ/2)*blockSizeZ;
+  //         buildingMesh.position.x=buildingMesh.position.x+(j+0.5-blockNumX/2)*blockSizeX;
+  //         buildingMesh.position.z=buildingMesh.position.z+(i+0.5-blockNumZ/2)*blockSizeZ;
+  //
+  //         //随机初始化大小
+  //         buildingMesh.scale.x=blockSizeX-roadW;
+  //         buildingMesh.scale.y=sidewayH;
+  //         buildingMesh.scale.z=blockSizeZ-roadD;
+  //
+  //         //加入城市
+  //         buildingMesh.updateMatrix();
+  //         sidewayGeometry.merge(buildingMesh.geometry, buildingMesh.matrix);
+  //       }
+  //     }
+  //   }
+  //   var material=new THREE.MeshLambertMaterial();
+  //   material.color=0x444444;
+  //   var sidewayMesh=new THREE.Mesh(sidewayGeometry,material);
+  //   return sidewayMesh;
+  //
+  // }
   
   function createSquareBuildings() {
     //建立楼房
@@ -109,7 +109,7 @@ THREEx.ModernCity = function() {
           buildingMesh.position.z=buildingMesh.position.z+(i+0.5-blockNumZ/2)*blockSizeZ;
 
           //随机初始化楼房大小
-          buildingMesh.scale.x=Math.min(Math.random() * Math.random()* 50 + 10, buildingMaxW);
+          buildingMesh.scale.x=Math.min(Math.random() * Math.random()* 5 + 10, buildingMaxW);
           buildingMesh.scale.y=(Math.random() * Math.random() * Math.random() * buildingMesh.scale.x) * 3 + 8;
           buildingMesh.scale.z=Math.min(buildingMesh.scale.x,buildingMaxD);
 
