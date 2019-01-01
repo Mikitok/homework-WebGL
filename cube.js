@@ -36,8 +36,17 @@ function initScene(){
         path + 'top.jpg', path + 'bottom.jpg',
         path + 'front.jpg', path + 'back.jpg'
     ];
-    var skyTexture = new THREE.CubeTextureLoader().load(urls);
-    scene.background = skyTexture;
+    var skyGeometry = new THREE.BoxGeometry( 5000, 5000, 5000 );
+    var materialArray = [];
+    for (var i = 0; i < 6; i++){
+        material=new THREE.MeshBasicMaterial();
+        material.map=THREE.TextureLoader(urls[i]);
+        material.side=THREE.BackSide;
+        materialArray.push(material);
+    }
+    var skyMaterial = new THREE.MultiMaterial( materialArray );
+    var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
+    scene.add( skyBox );
 }
 
 function initRenderer() {
