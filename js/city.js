@@ -12,45 +12,47 @@ function ModernCity () {
   cube.faceVertexUvs[0][5][1].set(0, 0);
   cube.faceVertexUvs[0][5][2].set(0, 0);
 
-  var buildingMesh=new THREE.Mesh(cube);
+  let buildingMesh=new THREE.Mesh(cube);
 
   //楼房
-  var buildingMaxW=15;
-  var buildingMaxD=15;
+  let buildingMaxW=15;
+  let buildingMaxD=15;
 
   //社区
-  var blockNumX=20;
-  var blockNumZ=20;
-  var blockSizeX=50;
-  var blockSizeZ=50;
-  var blockDensity= 15;
+  let blockNumX=20;
+  let blockNumZ=20;
+  let blockSizeX=50;
+  let blockSizeZ=50;
+  let blockDensity= 15;
 
   //街道
-  var roadW=8;
-  var roadD=8;
+  let roadW=8;
+  let roadD=8;
 
   //人行道
-  var sidewayW=2;
-  var sidewayH=0.3;
-  var sidewayD=2;
+  let sidewayW=2;
+  let sidewayH=0.3;
+  let sidewayD=2;
 
   // 生成纹理
-  var buildingTexture=new THREE.Texture(generateTextureCanvas());
+  let buildingTexture=new THREE.Texture(generateTextureCanvas());
   buildingTexture.anisotropy=renderer.getMaxAnisotropy();
   buildingTexture.needsUpdate=true; //在下次使用纹理时触发一次更新
 
   //建立城市
-  var object=new THREE.Object3D();
+  let object=new THREE.Object3D();
 
-  var groundMesh=createSquareGround();
+  let groundMesh=createSquareGround();
   groundMesh.castShadow=true;
   groundMesh.receiveShadow=true;
   object.add(groundMesh);
 
-  var sidewayMesh=createSquareSideWay();
+  let sidewayMesh=createSquareSideWay();
+  sidewayMesh.castShadow=true;
+  sidewayMesh.receiveShadow=true;
   object.add(sidewayMesh);
 
-  var buildingsMesh=createSquareBuildings();
+  let buildingsMesh=createSquareBuildings();
   buildingsMesh.castShadow=true;
   buildingsMesh.receiveShadow=true;
   object.add(buildingsMesh);
@@ -59,40 +61,39 @@ function ModernCity () {
 
   function createSquareGround() {
     //建立地面
-    var geometry=new THREE.PlaneGeometry(2,2,2);
-    var material=new THREE.MeshLambertMaterial({color:0x222222});
-    var ground=new THREE.Mesh(geometry,material);
+    let geometry=new THREE.PlaneGeometry(1,1,1);
+    let material=new THREE.MeshLambertMaterial({color:0x222222});
+    let ground=new THREE.Mesh(geometry,material);
     ground.rotation.x = (-90 * Math.PI) / 180;
     ground.scale.x=blockNumX*blockSizeX;
     ground.scale.y=blockNumZ*blockSizeZ;
-    ground.rotation.x = (-90 * Math.PI) / 180;
     ground.receiveShadow=true;
     return ground;
   }
 
   function createSquareSideWay() {
-    var sidewayGeometry=new THREE.Geometry();
+    let sidewayGeometry=new THREE.Geometry();
 
-    for(var i=0;i<blockNumZ;i++){
-      for(var j=0;j<blockNumX;j++){
-        //随机选取楼房初始坐标
+    for(let i=0;i<blockNumZ;i++){
+      for(let j=0;j<blockNumX;j++){
+        //选取初始坐标
         buildingMesh.position.x=(i+0.5-blockNumX/2)*blockSizeX;
         buildingMesh.position.z=(j+0.5-blockNumZ/2)*blockSizeZ;
 
-        //随机初始化大小
+        //初始化大小
         buildingMesh.scale.x=blockSizeX-roadW;
         buildingMesh.scale.y=sidewayH;
         buildingMesh.scale.z=blockSizeZ-roadD;
 
-        //将楼房加入城市
+        //加入城市
         buildingMesh.updateMatrix();
         sidewayGeometry.merge(buildingMesh.geometry, buildingMesh.matrix);
       }
     }
-    var material=new THREE.MeshLambertMaterial();
+    let material=new THREE.MeshLambertMaterial();
     material.map=buildingTexture;
     material.vertexColors=THREE.VertexColors;
-    var sidewayMesh=new THREE.Mesh(sidewayGeometry,material);
+    let sidewayMesh=new THREE.Mesh(sidewayGeometry,material);
     return sidewayMesh;
 
   }
@@ -100,11 +101,11 @@ function ModernCity () {
 
   function createSquareBuildings() {
     //建立楼房
-    var cityGeometry=new THREE.Geometry();
+    let cityGeometry=new THREE.Geometry();
 
-    for(var i=0;i<blockNumZ;i++){
-      for(var j=0;j<blockNumX;j++){
-        for(var k=0;k<blockDensity;k++){
+    for(let i=0;i<blockNumZ;i++){
+      for(let j=0;j<blockNumX;j++){
+        for(let k=0;k<blockDensity;k++){
           //随机选取楼房初始坐标
           buildingMesh.position.x=Math.floor((Math.random()-0.5)*(blockSizeX-buildingMaxW-roadW-sidewayW));//在-1000到1000之间
           buildingMesh.position.z=Math.floor((Math.random()-0.5)*(blockSizeZ-buildingMaxD-roadD-sidewayD));
@@ -120,12 +121,12 @@ function ModernCity () {
           buildingMesh.scale.z=Math.min(buildingMesh.scale.x,buildingMaxD);
 
           //随机初始化楼房的颜色
-          var value=1-Math.random()*Math.random();
-          var basicColor=new THREE.Color().setRGB(value+0.2*Math.random(),value,value+0.2*Math.random());
+          let value=1-Math.random()*Math.random();
+          let basicColor=new THREE.Color().setRGB(value+0.2*Math.random(),value,value+0.2*Math.random());
 
           //逐面添加颜色
-          var geometry=buildingMesh.geometry;
-          for (var m=0, jmax=geometry.faces.length; m<jmax; m++){
+          let geometry=buildingMesh.geometry;
+          for (let m=0, jmax=geometry.faces.length; m<jmax; m++){
             geometry.faces[m].vertexColors = [basicColor, basicColor, basicColor];
           }
 
@@ -135,17 +136,17 @@ function ModernCity () {
         }
       }
     }
-    var material=new THREE.MeshLambertMaterial();
+    let material=new THREE.MeshLambertMaterial();
     material.map=buildingTexture;
     material.vertexColors=THREE.VertexColors;
-    var cityMesh=new THREE.Mesh(cityGeometry,material);
+    let cityMesh=new THREE.Mesh(cityGeometry,material);
     return cityMesh;
   }
 }
 
 
 function generateTextureCanvas(){
-  var canvas = document.createElement('canvas');
+  let canvas = document.createElement('canvas');
   canvas.width=16;
   canvas.height=32;
   var context=canvas.getContext( '2d' );
@@ -153,15 +154,15 @@ function generateTextureCanvas(){
   context.fillRect(0, 0, 32, 64);
 
   //画窗户
-  for(var y=2;y<32;y+=2){
-    for(var x=0;x<16;x+=2){
+  for(let y=2;y<32;y+=2){
+    for(let x=0;x<16;x+=2){
       var value=Math.floor(Math.random()*64);
       context.fillStyle='rgb('+[value,value,value].join(',')+')';
       context.fillRect(x,y,2,1);
     }
   }
 
-  var canvas2=document.createElement('canvas');
+  let canvas2=document.createElement('canvas');
   canvas2.width=512;
   canvas2.height=1024;
   var context=canvas2.getContext('2d');
